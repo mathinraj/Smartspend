@@ -18,13 +18,25 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
-    private BigDecimal amount;
+    @Column(nullable = false)
+    private Double amount;
 
+    @Column(nullable = false)
     private LocalDate date;
 
+    @Column(nullable = false)
+    private String category;
+
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(nullable = false)
+    private boolean isRecurring;
+
+    @Column(nullable = false)
+    private String recurrenceInterval;
 }
