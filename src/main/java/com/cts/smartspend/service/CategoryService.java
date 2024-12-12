@@ -1,11 +1,14 @@
-package com.cts.Smartspend.Service;
+package com.cts.smartspend.service;
 
-import com.cts.Smartspend.Entity.Category;
+import com.cts.smartspend.entity.Category;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CategoryService {
 
+    private
+
+    public Category createCategory(Category category) {
+
+    }
 }

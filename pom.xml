@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cts</groupId>
-	<artifactId>Smartspend</artifactId>
+	<artifactId>SmartSpend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Smartspend</name>
 	<description>SmartSpend helps you manage your finances effortlessly by tracking your daily expenses and categorizing them. Built as a full-stack application, it leverages Spring Boot for the backend, MySQL for database management, and will soon feature a React frontend for a seamless user experience.</description>

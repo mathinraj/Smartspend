@@ -1,13 +1,13 @@
-package com.cts.Smartspend;
+package com.cts.smartspend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SmartspendApplication {
+public class SmartSpendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SmartspendApplication.class, args);
+		SpringApplication.run(SmartSpendApplication.class, args);
 	}
 
 }

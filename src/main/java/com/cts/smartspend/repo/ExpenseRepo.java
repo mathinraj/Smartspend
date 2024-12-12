@@ -1,4 +1,4 @@
-package com.cts.Smartspend.Repo;
+package com.cts.smartspend.repo;
 
 public interface ExpenseRepo {
 }

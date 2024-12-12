@@ -1,4 +1,4 @@
-package com.cts.Smartspend.Exception;
+package com.cts.smartspend.exception;
 
 public class ResourceNotFoundException {
 }

@@ -1,7 +1,7 @@
-package com.cts.Smartspend.Controller;
+package com.cts.smartspend.controller;
 
-import com.cts.Smartspend.Entity.Expense;
-import com.cts.Smartspend.Service.ExpenseService;
+import com.cts.smartspend.entity.Expense;
+import com.cts.smartspend.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
