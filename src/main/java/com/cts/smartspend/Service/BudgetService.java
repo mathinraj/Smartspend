@@ -2,55 +2,64 @@ package com.cts.smartspend.service;
 
 import com.cts.smartspend.dto.BudgetDTO;
 import com.cts.smartspend.entity.Budget;
-import com.cts.smartspend.entity.User;
+import com.cts.smartspend.entity.Category;
+import com.cts.smartspend.exception.BudgetNotFoundException;
+import com.cts.smartspend.exception.CategoryNotFoundException;
 import com.cts.smartspend.repo.BudgetRepo;
-import com.cts.smartspend.repo.UserRepo;
+import com.cts.smartspend.repo.CategoryRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BudgetService {
 
-    private final BudgetRepo budgetRepo;
-    private final UserRepo userRepo;
+    @Autowired
+    private BudgetRepo budgetRepo;
 
-    public BudgetService(BudgetRepo budgetRepo, UserRepo userRepo) {
-        this.budgetRepo = budgetRepo;
-        this.userRepo = userRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
+
+    public List<Budget> getAllBudgets() {
+        return budgetRepo.findAll();
     }
 
-    public void setBudget(BudgetDTO budgetDTO) {
-        User user = userRepo.findById(budgetDTO.getUserID())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public Budget setBudget(BudgetDTO budgetDTO) {
+        Category category = categoryRepo.findById(budgetDTO.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
 
         Budget budget = new Budget();
-        budget.setUser(user);
-        budget.setCategory(budgetDTO.getCategory());
-        budget.setLimit(budgetDTO.getLimit());
-        budgetRepo.save(budget);
+        budget.setCategory(category);
+        budget.setAmount(budgetDTO.getAmount());
+        budget.setStartDate(budgetDTO.getStartDate());
+        budget.setEndDate(budgetDTO.getEndDate());
+
+        return budgetRepo.save(budget);
     }
 
-    public List<BudgetDTO> getAllBudgets() {
-        return budgetRepo.findAll().stream().map(budget -> new
-                BudgetDTO(
-                        budget.getCategory(),
-                        budget.getLimit(),
-                        budget.getUser().getId()
-        )).collect(Collectors.toList());
+    public Budget getBudgetById(Long id) {
+        return budgetRepo.findById(id)
+                .orElseThrow(() -> new BudgetNotFoundException("Budget is not found"));
     }
 
-    public void updateBudget(Long id, BudgetDTO budgetDTO) {
-        Budget budget = budgetRepo.findById(id)
-                orElseThrow(() -> new RuntimeException("Budget not found"));
 
-        budget.setCategory(budgetDTO.getCategory());
-        budget.setLimit(budgetDTO.getLimit());
-        budgetRepo.save(budget);
+    public Budget updateBudget(Long id, BudgetDTO budgetDTO) {
+        Budget budget = getBudgetById(id);
+        Category category = categoryRepo.findById(budgetDTO.getCategoryId())
+                        .orElseThrow(() -> new CategoryNotFoundException("Category cannot be found"));
+
+        budget.setCategory(category);
+        budget.setAmount(budgetDTO.getAmount());
+        budget.setStartDate(budgetDTO.getStartDate());
+        budget.setEndDate(budgetDTO.getEndDate());
+
+        return budgetRepo.save(budget);
     }
 
     public void deleteBudget(Long id) {
-        budgetRepo.deleteById(id);
+        Budget budget = budgetRepo.findById(id)
+                .orElseThrow(() -> new BudgetNotFoundException("Budget cannot be found"));
+        budgetRepo.delete(budget);
     }
 }

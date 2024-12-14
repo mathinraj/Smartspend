@@ -1,23 +1,31 @@
 package com.cts.smartspend.dto;
 
+import com.cts.smartspend.entity.Category;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BudgetDTO {
 
-    @NotBlank(message = "Category is required")
-    private String category;
+    @DecimalMin(value = "1.0", message = "Budget amount should be greater than Rs.1")
+    private double amount;
 
-    @NotNull(message = "Limit amount is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Amount should be greater than O")
-    private Double limit;
+    @NotNull(message = "Category ID cannot be null")
+    private Long categoryId;
 
-    @NotNull(message = "UserID is required")
-    private Long userID;
+    @NotBlank(message = "Start date cannot be empty")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate startDate;
+
+    @NotBlank(message = "End date cannot be empty")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate endDate;
 }

@@ -1,7 +1,6 @@
 package com.cts.smartspend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
@@ -12,12 +11,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category")
     private List<Expense> expenses;
 }

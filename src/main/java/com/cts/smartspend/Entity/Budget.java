@@ -3,6 +3,8 @@ package com.cts.smartspend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "budgets")
 @Data
@@ -14,13 +16,13 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String Category;
-
-    @Column(nullable = false)
-    private Double limit;
-
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    private double amount;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 }

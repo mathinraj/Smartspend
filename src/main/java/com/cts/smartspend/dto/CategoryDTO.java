@@ -8,8 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 public class CategoryDTO {
 
-    private Long id;
-
-    @NotBlank(message = "Category name is required")
+    @NotBlank(message = "Category name should not be empty")
     private String name;
 }
