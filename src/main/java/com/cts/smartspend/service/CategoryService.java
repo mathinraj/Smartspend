@@ -16,10 +16,12 @@ public class CategoryService {
     @Autowired
     private CategoryRepo categoryRepo;
 
-    public Category createCategory(CategoryDTO categoryDTO) {
-        Category category = new Category() ;
-        category.setName(categoryDTO.getName());
-        return categoryRepo.save(category);
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        Category category = Category.builder()
+                .name(categoryDTO.getName())
+                .build();
+        Category savedCategory = categoryRepo.save(category);
+        return convertToCategoryDTO(savedCategory);
     }
 
     public List<Category> getAllCategories() {
@@ -40,5 +42,12 @@ public class CategoryService {
     public void deleteCategory(Long id) {
         Category category = getCategoryById(id);
         categoryRepo.delete(category);
+    }
+
+    public CategoryDTO convertToCategoryDTO(Category category) {
+        return new CategoryDTO(
+                category.getName()
+        );
+
     }
 }

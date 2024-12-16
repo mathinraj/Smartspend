@@ -1,4 +1,5 @@
 package com.cts.smartspend.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,9 +17,10 @@ public class Expense {
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     private Category category;
 
-    private double amount;
+    private Double amount;
 
     private String description;
 
@@ -26,7 +28,7 @@ public class Expense {
 
     public Expense() {
     }
-    public Expense(Long id, Category category, double amount, String description, LocalDate date) {
+    public Expense(Long id, Category category, Double amount, LocalDate date, String description) {
         this.id = id;
         this.category = category;
         this.amount = amount;
@@ -50,11 +52,11 @@ public class Expense {
         this.category = category;
     }
 
-    public double getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

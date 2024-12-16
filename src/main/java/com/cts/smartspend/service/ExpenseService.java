@@ -1,4 +1,5 @@
 package com.cts.smartspend.service;
+import com.cts.smartspend.dto.ExpenseResponseDTO;
 import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.entity.Expense;
 import com.cts.smartspend.dto.ExpenseDTO;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpenseService {
@@ -22,7 +24,7 @@ public class ExpenseService {
     private ExpenseRepo expenseRepo;
 
     @Transactional
-    public Expense createExpense(ExpenseDTO expenseDTO) {
+    public ExpenseDTO createExpense(ExpenseDTO expenseDTO) {
         Category category = categoryRepo.findById(expenseDTO.getCategoryId())
                 .orElseThrow(() -> new ExpenseNotFoundException("Category not found"));
 
@@ -31,37 +33,53 @@ public class ExpenseService {
         expense.setDescription(expenseDTO.getDescription());
         expense.setAmount(expenseDTO.getAmount());
         expense.setDate(expenseDTO.getDate());
-        return expenseRepo.save(expense);
+        Expense savedExpense =  expenseRepo.save(expense);
+        return convertToExpenseDTO(savedExpense);
     }
 
-    public List<Expense> getAllExpenses() {
-        return expenseRepo.findAll();
+    public List<ExpenseResponseDTO> getAllExpenses() {
+        List<Expense> expenses= expenseRepo.findAll();
+        return expenses.stream()
+                .map(this::convertToExpenseResponseDTO)
+                .collect(Collectors.toList());
     }
 
-    public Expense getExpenseById(Long id) {
-        return expenseRepo.findById(id).orElseThrow(() -> new ExpenseNotFoundException("Expense with ID " + id + " not found"));
+    public ExpenseResponseDTO getExpenseById(Long id) {
+         Expense expense = expenseRepo.findById(id)
+                 .orElseThrow(() -> new ExpenseNotFoundException("Expense with ID " + id + " not found"));
+         return convertToExpenseResponseDTO(expense);
     }
 
-    public List<Expense> getExpenseByCategory(Long id) {
-        return expenseRepo.findByCategoryId(id);
+    public List<ExpenseResponseDTO> getExpenseByCategory(Long id) {
+        List<Expense> expenses = expenseRepo.findByCategoryId(id);
+        return expenses.stream()
+                .map(this::convertToExpenseResponseDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Expense> getExpensesByDate(LocalDate date) {
-        return expenseRepo.findByDate(date);
+    public List<ExpenseResponseDTO> getExpensesByDate(LocalDate date) {
+        List<Expense> expenses = expenseRepo.findByDate(date);
+        return expenses.stream()
+                .map(this::convertToExpenseResponseDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Expense> getExpensesByRange(LocalDate startDate, LocalDate endDate) {
-        return expenseRepo.findByDateRange(startDate, endDate);
+    public List<ExpenseResponseDTO> getExpensesByRange(LocalDate startDate, LocalDate endDate) {
+        List<Expense> expenses = expenseRepo.findByDateRange(startDate, endDate);
+        return expenses.stream()
+                .map(this::convertToExpenseResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Expense updateExpense(Long id, ExpenseDTO expenseDTO) {
-        Expense expense = getExpenseById(id);
+    public ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO) {
+        Expense expense = getExpenseEntityById(id);
 
         expense.setDescription(expenseDTO.getDescription());
         expense.setAmount(expenseDTO.getAmount());
         expense.setDate(expenseDTO.getDate());
-        return expenseRepo.save(expense);
+        Expense savedExpense =  expenseRepo.save(expense);
+        return convertToExpenseDTO(savedExpense);
     }
 
     @Transactional
@@ -70,4 +88,30 @@ public class ExpenseService {
                 .orElseThrow(() -> new ExpenseNotFoundException("Expense with ID " + id + " not found"));
         expenseRepo.delete(expense);
     }
+
+    private Expense getExpenseEntityById(Long id) {
+        return expenseRepo.findById(id)
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense with ID " + id + " not found"));
+    }
+    private ExpenseDTO convertToExpenseDTO(Expense expense) {
+        return new ExpenseDTO(
+                expense.getId(),
+                expense.getCategory().getId(),
+                expense.getAmount(),
+                expense.getDate(),
+                expense.getDescription()
+
+        );
+    }
+
+    private ExpenseResponseDTO convertToExpenseResponseDTO(Expense expense) {
+        return new ExpenseResponseDTO(
+                expense.getId(),
+                expense.getDescription(),
+                expense.getAmount(),
+                expense.getDate(),
+                expense.getCategory().getName()
+        );
+    }
+
 }

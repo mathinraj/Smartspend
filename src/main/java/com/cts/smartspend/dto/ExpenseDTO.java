@@ -1,5 +1,6 @@
 package com.cts.smartspend.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,19 +18,19 @@ public class ExpenseDTO {
     private Long categoryId;
 
     @DecimalMin(value = "1", message = "The amount should be greater than Rs.1")
-    private double amount;
+    private Double amount;
 
     @NotBlank(message = "Provide proper description")
     private String description;
 
     @NotNull(message = "Date must be entered")
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
 
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, Long categoryId, double amount, String description, LocalDate date) {
+    public ExpenseDTO(Long id, Long categoryId, Double amount, LocalDate date, String description) {
         this.id = id;
         this.categoryId = categoryId;
         this.amount = amount;
@@ -53,11 +54,11 @@ public class ExpenseDTO {
         this.categoryId = categoryId;
     }
 
-    public double getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

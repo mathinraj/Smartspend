@@ -5,6 +5,7 @@ import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,9 @@ public class CategoryController {
     CategoryService categoryService;
 
     @PostMapping("/add")
-    public ResponseEntity<Category> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
-        return ResponseEntity.ok(categoryService.createCategory(categoryDTO));
+    public ResponseEntity<CategoryDTO> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO category = categoryService.createCategory(categoryDTO);
+        return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
     @GetMapping("/getall")
