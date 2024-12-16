@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -24,30 +25,37 @@ public class CategoryService {
         return convertToCategoryDTO(savedCategory);
     }
 
-    public List<Category> getAllCategories() {
-        return categoryRepo.findAll();
+    public List<CategoryDTO> getAllCategories() {
+        List<Category> category = categoryRepo.findAll();
+        return convertToCategoryDTO(category);
     }
 
-    public Category getCategoryById(Long id) {
-        return categoryRepo.findById(id)
+    public CategoryDTO getCategoryById(Long id) {
+        Category category = categoryRepo.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
+        return convertToCategoryDTO(category);
     }
 
-    public Category updateCategory(Long id, CategoryDTO categoryDTO) {
-        Category category = getCategoryById(id);
+    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
+        CategoryDTO category = getCategoryById(id);
         category.setName(categoryDTO.getName());
-        return categoryRepo.save(category);
+        return convertToCategoryDTO(categoryRepo.save(category));
     }
 
     public void deleteCategory(Long id) {
-        Category category = getCategoryById(id);
-        categoryRepo.delete(category);
+        CategoryDTO categoryDTO = getCategoryById(id);
+        categoryRepo.delete(categoryDTO);
     }
 
     public CategoryDTO convertToCategoryDTO(Category category) {
         return new CategoryDTO(
                 category.getName()
         );
+    }
 
+    public List<CategoryDTO> convertToCategoryDTO(List<Category> categories) {
+        return categories.stream()
+                .map(this::convertToCategoryDTO)
+                .collect(Collectors.toList());
     }
 }
