@@ -2,10 +2,12 @@ package com.cts.smartspend.service;
 import com.cts.smartspend.dto.ExpenseResponseDTO;
 import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.entity.Expense;
+import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.dto.ExpenseDTO;
 import com.cts.smartspend.exception.ExpenseNotFoundException;
 import com.cts.smartspend.repo.CategoryRepo;
 import com.cts.smartspend.repo.ExpenseRepo;
+import com.cts.smartspend.repo.BudgetRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class ExpenseService {
 
     @Autowired
     private ExpenseRepo expenseRepo;
+
+    @Autowired
+    private BudgetRepo budgetRepo;
 
     @Transactional
     public ExpenseDTO createExpense(ExpenseDTO expenseDTO) {
@@ -113,12 +118,23 @@ public class ExpenseService {
     }
 
     private ExpenseResponseDTO convertToExpenseResponseDTO(Expense expense) {
+        Budget budget = budgetRepo.findByCategoryId(expense.getCategory().getId())
+                .orElseThrow(() -> new RuntimeException("Budget not found"));
+
+        double totalExpenses = expenseRepo.findByCategoryIdAndDateRange( expense.getCategory().getId(), budget.getStartDate(), budget.getEndDate())
+                .stream()
+                .mapToDouble(Expense::getAmount)
+                .sum();
+
+        double remainingBudget = budget.getAmount() - totalExpenses;
+
         return new ExpenseResponseDTO(
                 expense.getId(),
                 expense.getDescription(),
                 expense.getAmount(),
                 expense.getDate(),
-                expense.getCategory().getName()
+                expense.getCategory().getName(),
+                remainingBudget
         );
     }
 

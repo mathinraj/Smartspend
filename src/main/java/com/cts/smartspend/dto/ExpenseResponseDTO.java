@@ -15,15 +15,18 @@ public class ExpenseResponseDTO {
     private Double amount;
     private LocalDate date;
     private String categoryName;
+    private Double remainingBudget;
 
     public ExpenseResponseDTO() {
     }
-    public ExpenseResponseDTO(Long id, String description, Double amount, LocalDate date, String categoryName) {
+
+    public ExpenseResponseDTO(Long id, String description, Double amount, LocalDate date, String categoryName, Double remainingBudget) {
         this.id = id;
         this.description = description;
         this.amount = amount;
         this.date = date;
         this.categoryName = categoryName;
+        this.remainingBudget = remainingBudget;
     }
 
     public Long getId() {
@@ -64,5 +67,13 @@ public class ExpenseResponseDTO {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public Double getRemainingBudget() {
+        return remainingBudget;
+    }
+
+    public void setRemainingBudget(Double remainingBudget) {
+        this.remainingBudget = remainingBudget;
     }
 }
