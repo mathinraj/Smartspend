@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Expense {
 
     @Id
@@ -28,7 +29,8 @@ public class Expense {
 
     public Expense() {
     }
-    public Expense(Long id, Category category, Double amount, LocalDate date, String description) {
+
+    public Expense(Long id, Category category, Double amount, String description, LocalDate date) {
         this.id = id;
         this.category = category;
         this.amount = amount;

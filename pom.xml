@@ -11,7 +11,7 @@
 	<groupId>com.cts</groupId>
 	<artifactId>SmartSpend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Smartspend</name>
+	<name>SmartSpend</name>
 	<description>SmartSpend helps you manage your finances effortlessly by tracking your daily expenses and categorizing them. Built as a full-stack application, it leverages Spring Boot for the backend, MySQL for database management, and will soon feature a React frontend for a seamless user experience.</description>
 	<url/>
 	<licenses>
@@ -47,7 +47,8 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
+<!--			<optional>true</optional>-->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -28,13 +28,22 @@ public class ExpenseService {
         Category category = categoryRepo.findById(expenseDTO.getCategoryId())
                 .orElseThrow(() -> new ExpenseNotFoundException("Category not found"));
 
+//        Expense expense = Expense.builder()
+//                .category(category)
+//                .description(expenseDTO.getDescription())
+//                .amount(expenseDTO.getAmount())
+//                .date(expenseDTO.getDate())
+//                .build();
+
         Expense expense = new Expense();
         expense.setCategory(category);
         expense.setDescription(expenseDTO.getDescription());
         expense.setAmount(expenseDTO.getAmount());
         expense.setDate(expenseDTO.getDate());
-        Expense savedExpense =  expenseRepo.save(expense);
+
+        Expense savedExpense = expenseRepo.save(expense);
         return convertToExpenseDTO(savedExpense);
+
     }
 
     public List<ExpenseResponseDTO> getAllExpenses() {
@@ -98,9 +107,8 @@ public class ExpenseService {
                 expense.getId(),
                 expense.getCategory().getId(),
                 expense.getAmount(),
-                expense.getDate(),
-                expense.getDescription()
-
+                expense.getDescription(),
+                expense.getDate()
         );
     }
 

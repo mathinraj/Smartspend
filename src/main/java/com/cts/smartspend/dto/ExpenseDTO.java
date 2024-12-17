@@ -30,7 +30,7 @@ public class ExpenseDTO {
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, Long categoryId, Double amount, LocalDate date, String description) {
+    public ExpenseDTO(Long id, Long categoryId, Double amount, String description, LocalDate date) {
         this.id = id;
         this.categoryId = categoryId;
         this.amount = amount;

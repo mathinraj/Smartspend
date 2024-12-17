@@ -1,10 +1,14 @@
 package com.cts.smartspend.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExpenseResponseDTO {
     private Long id;
     private String description;
@@ -12,15 +16,14 @@ public class ExpenseResponseDTO {
     private LocalDate date;
     private String categoryName;
 
+    public ExpenseResponseDTO() {
+    }
     public ExpenseResponseDTO(Long id, String description, Double amount, LocalDate date, String categoryName) {
         this.id = id;
         this.description = description;
         this.amount = amount;
         this.date = date;
         this.categoryName = categoryName;
-    }
-
-    public ExpenseResponseDTO() {
     }
 
     public Long getId() {

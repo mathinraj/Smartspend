@@ -4,7 +4,7 @@ import com.cts.smartspend.dto.CategoryDTO;
 import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.exception.CategoryNotFoundException;
 import com.cts.smartspend.repo.CategoryRepo;
-import jakarta.validation.Valid;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,13 @@ public class CategoryService {
     @Autowired
     private CategoryRepo categoryRepo;
 
+    @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        Category category = Category.builder()
-                .name(categoryDTO.getName())
-                .build();
+//        Category category = Category.builder()
+//                .name(categoryDTO.getName())
+//                .build();
+        Category category = new Category();
+        category.setName(categoryDTO.getName());
         Category savedCategory = categoryRepo.save(category);
         return convertToCategoryDTO(savedCategory);
     }
@@ -36,19 +39,25 @@ public class CategoryService {
         return convertToCategoryDTO(category);
     }
 
+    @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
-        CategoryDTO category = getCategoryById(id);
-        category.setName(categoryDTO.getName());
-        return convertToCategoryDTO(categoryRepo.save(category));
+        Category existingCategory = categoryRepo.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
+        existingCategory.setName(categoryDTO.getName());
+        Category savedCategory = categoryRepo.save(existingCategory);
+        return convertToCategoryDTO(savedCategory);
     }
 
+    @Transactional
     public void deleteCategory(Long id) {
-        CategoryDTO categoryDTO = getCategoryById(id);
-        categoryRepo.delete(categoryDTO);
+        Category category = categoryRepo.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
+        categoryRepo.delete(category);
     }
 
     public CategoryDTO convertToCategoryDTO(Category category) {
         return new CategoryDTO(
+                category.getId(),
                 category.getName()
         );
     }
