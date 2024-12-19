@@ -4,6 +4,8 @@ import com.cts.smartspend.dto.BudgetDTO;
 import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.service.BudgetService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,37 +20,62 @@ public class BudgetController {
     @Autowired
     private BudgetService budgetService;
 
+    private static final Logger logger = LoggerFactory.getLogger(BudgetController.class);
+
     @GetMapping("/getall")
     public ResponseEntity<List<BudgetDTO>> getAllBudgets(){
         List<BudgetDTO> budget = budgetService.getAllBudgets();
+        if(budget == null){
+            logger.info("No budget found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        logger.info("Budget found");
         return new ResponseEntity<>(budget, HttpStatus.OK);
     }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<BudgetDTO> getBudgetById(@PathVariable Long id){
         BudgetDTO budgetDTO = budgetService.getBudgetById(id);
+        if(budgetDTO == null){
+            logger.info("Budget with ID {} not found", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        logger.info("Budget found with ID {}", id);
         return new ResponseEntity<>(budgetDTO, HttpStatus.OK);
     }
 
     @GetMapping("/get/category/{id}")
     public ResponseEntity<List<BudgetDTO>> getBudgetByCategory(@PathVariable Long id){
         List<BudgetDTO> budgetDTO = budgetService.getBudgetByCategoryId(id);
+        if(budgetDTO == null){
+            logger.warn("Budget with category ID {} not found", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        logger.info("Budget found with category ID {}", id);
         return new ResponseEntity<>(budgetDTO, HttpStatus.OK);
     }
 
     @PostMapping("/set")
     public ResponseEntity<BudgetDTO> setBudget(@Valid @RequestBody BudgetDTO budgetDTO){
         BudgetDTO budget = budgetService.setBudget(budgetDTO);
+        logger.info("Budget created successfully");
         return new ResponseEntity<>(budget, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<BudgetDTO> updateBudget(@Valid @RequestBody BudgetDTO budgetDTO, @PathVariable Long id){
-        return new ResponseEntity<>(budgetService.updateBudget(id, budgetDTO), HttpStatus.OK);
+        BudgetDTO budget = budgetService.updateBudget(id, budgetDTO);
+        if(budget == null){
+            logger.warn("Budget with ID {} not found", id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        logger.info("Budget updated successfully");
+        return new ResponseEntity<>(budget, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBudget(@PathVariable Long id){
         budgetService.deleteBudget(id);
+        logger.info("Budget deleted successfully");
         return new ResponseEntity<>("Budget deleted successfully", HttpStatus.OK);}
 }

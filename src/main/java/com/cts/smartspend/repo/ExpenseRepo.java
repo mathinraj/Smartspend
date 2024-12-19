@@ -22,3 +22,4 @@ public interface ExpenseRepo extends JpaRepository <Expense, Long> {
     @Query("SELECT e FROM Expense e WHERE e.category.id = :categoryId AND e.date BETWEEN :startDate AND :endDate")
     List<Expense> findByCategoryIdAndDateRange(@Param("categoryId") Long categoryId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
+
