@@ -33,7 +33,7 @@ public class BudgetService {
     @Transactional
     public BudgetDTO setBudget(BudgetDTO budgetDTO) {
         Category category = categoryRepo.findById(budgetDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
 //        Budget budget = Budget.builder()
 //                .category(category)

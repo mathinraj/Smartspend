@@ -4,6 +4,7 @@ import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.entity.Expense;
 import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.dto.ExpenseDTO;
+import com.cts.smartspend.exception.BudgetNotFoundException;
 import com.cts.smartspend.exception.ExpenseNotFoundException;
 import com.cts.smartspend.repo.CategoryRepo;
 import com.cts.smartspend.repo.ExpenseRepo;
@@ -119,7 +120,7 @@ public class ExpenseService {
 
     private ExpenseResponseDTO convertToExpenseResponseDTO(Expense expense) {
         Budget budget = budgetRepo.findByCategoryId(expense.getCategory().getId())
-                .orElseThrow(() -> new RuntimeException("Budget not found"));
+                .orElseThrow(() -> new BudgetNotFoundException("Budget not found"));
 
         double totalExpenses = expenseRepo.findByCategoryIdAndDateRange( expense.getCategory().getId(), budget.getStartDate(), budget.getEndDate())
                 .stream()
