@@ -1,12 +1,11 @@
-package com.cts.smartspend.service;
+package com.cts.smartspend.serviceImpl;
 
 import com.cts.smartspend.dto.BudgetDTO;
 import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.entity.Category;
-import com.cts.smartspend.entity.Expense;
+import com.cts.smartspend.service.IBudgetService;
 import com.cts.smartspend.exception.BudgetNotFoundException;
 import com.cts.smartspend.exception.CategoryNotFoundException;
-import com.cts.smartspend.exception.ExpenseNotFoundException;
 import com.cts.smartspend.repo.BudgetRepo;
 import com.cts.smartspend.repo.CategoryRepo;
 import jakarta.transaction.Transactional;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BudgetService {
+public class BudgetService implements IBudgetService {
 
     @Autowired
     private BudgetRepo budgetRepo;
@@ -25,11 +24,13 @@ public class BudgetService {
     @Autowired
     private CategoryRepo categoryRepo;
 
+    @Override
     public List<BudgetDTO> getAllBudgets() {
         List<Budget> budget = budgetRepo.findAll();
         return convertToBudgetDTO(budget);
     }
 
+    @Override
     @Transactional
     public BudgetDTO setBudget(BudgetDTO budgetDTO) {
         Category category = categoryRepo.findById(budgetDTO.getCategoryId())
@@ -51,17 +52,20 @@ public class BudgetService {
         return convertToBudgetDTO(savedBudget);
     }
 
+    @Override
     public BudgetDTO getBudgetById(Long id) {
         Budget budget = budgetRepo.findById(id)
                 .orElseThrow(() -> new BudgetNotFoundException("Budget is not found"));
         return convertToBudgetDTO(budget);
     }
 
+    @Override
     public List<BudgetDTO> getBudgetByCategoryId(Long id) {
         List<Budget> budget = budgetRepo.findAllByCategoryId(id);
         return convertToBudgetDTO(budget);
     }
 
+    @Override
     @Transactional
     public BudgetDTO updateBudget(Long id, BudgetDTO budgetDTO) {
         Budget budget = getBudgetEntityById(id);
@@ -76,6 +80,7 @@ public class BudgetService {
         return convertToBudgetDTO(savedBudget);
     }
 
+    @Override
     @Transactional
     public void deleteBudget(Long id) {
         Budget budget = budgetRepo.findById(id)

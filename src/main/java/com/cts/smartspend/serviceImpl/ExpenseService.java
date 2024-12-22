@@ -1,4 +1,4 @@
-package com.cts.smartspend.service;
+package com.cts.smartspend.serviceImpl;
 import com.cts.smartspend.dto.ExpenseResponseDTO;
 import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.entity.Expense;
@@ -9,6 +9,7 @@ import com.cts.smartspend.exception.ExpenseNotFoundException;
 import com.cts.smartspend.repo.CategoryRepo;
 import com.cts.smartspend.repo.ExpenseRepo;
 import com.cts.smartspend.repo.BudgetRepo;
+import com.cts.smartspend.service.IExpenseService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ExpenseService {
+public class ExpenseService implements IExpenseService {
 
     @Autowired
     private CategoryRepo categoryRepo;
@@ -29,6 +30,7 @@ public class ExpenseService {
     @Autowired
     private BudgetRepo budgetRepo;
 
+    @Override
     @Transactional
     public ExpenseDTO createExpense(ExpenseDTO expenseDTO) {
         Category category = categoryRepo.findById(expenseDTO.getCategoryId())
@@ -52,6 +54,7 @@ public class ExpenseService {
 
     }
 
+    @Override
     public List<ExpenseResponseDTO> getAllExpenses() {
         List<Expense> expenses= expenseRepo.findAll();
         return expenses.stream()
@@ -59,12 +62,14 @@ public class ExpenseService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public ExpenseResponseDTO getExpenseById(Long id) {
          Expense expense = expenseRepo.findById(id)
                  .orElseThrow(() -> new ExpenseNotFoundException("Expense with ID " + id + " not found"));
          return convertToExpenseResponseDTO(expense);
     }
 
+    @Override
     public List<ExpenseResponseDTO> getExpenseByCategory(Long id) {
         List<Expense> expenses = expenseRepo.findByCategoryId(id);
         return expenses.stream()
@@ -72,6 +77,7 @@ public class ExpenseService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<ExpenseResponseDTO> getExpensesByDate(LocalDate date) {
         List<Expense> expenses = expenseRepo.findByDate(date);
         return expenses.stream()
@@ -79,6 +85,7 @@ public class ExpenseService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<ExpenseResponseDTO> getExpensesByRange(LocalDate startDate, LocalDate endDate) {
         List<Expense> expenses = expenseRepo.findByDateRange(startDate, endDate);
         return expenses.stream()
@@ -86,6 +93,7 @@ public class ExpenseService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     @Transactional
     public ExpenseDTO updateExpense(Long id, ExpenseDTO expenseDTO) {
         Expense expense = getExpenseEntityById(id);
@@ -97,6 +105,7 @@ public class ExpenseService {
         return convertToExpenseDTO(savedExpense);
     }
 
+    @Override
     @Transactional
     public void deleteExpense(Long id) {
         Expense expense = expenseRepo.findById(id)

@@ -1,9 +1,10 @@
-package com.cts.smartspend.service;
+package com.cts.smartspend.serviceImpl;
 
 import com.cts.smartspend.dto.CategoryDTO;
 import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.exception.CategoryNotFoundException;
 import com.cts.smartspend.repo.CategoryRepo;
+import com.cts.smartspend.service.ICategoryService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CategoryService {
+public class CategoryService implements ICategoryService {
 
     @Autowired
     private CategoryRepo categoryRepo;
 
+    @Override
     @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
 //        Category category = Category.builder()
@@ -28,17 +30,20 @@ public class CategoryService {
         return convertToCategoryDTO(savedCategory);
     }
 
+    @Override
     public List<CategoryDTO> getAllCategories() {
         List<Category> category = categoryRepo.findAll();
         return convertToCategoryDTO(category);
     }
 
+    @Override
     public CategoryDTO getCategoryById(Long id) {
         Category category = categoryRepo.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
         return convertToCategoryDTO(category);
     }
 
+    @Override
     @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category existingCategory = categoryRepo.findById(id)
@@ -48,6 +53,7 @@ public class CategoryService {
         return convertToCategoryDTO(savedCategory);
     }
 
+    @Override
     @Transactional
     public void deleteCategory(Long id) {
         Category category = categoryRepo.findById(id)

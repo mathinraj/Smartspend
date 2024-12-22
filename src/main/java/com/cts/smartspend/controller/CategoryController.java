@@ -1,8 +1,7 @@
 package com.cts.smartspend.controller;
 
 import com.cts.smartspend.dto.CategoryDTO;
-import com.cts.smartspend.entity.Category;
-import com.cts.smartspend.service.CategoryService;
+import com.cts.smartspend.serviceImpl.CategoryService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

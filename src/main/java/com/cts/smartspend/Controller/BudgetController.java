@@ -1,8 +1,7 @@
 package com.cts.smartspend.controller;
 
 import com.cts.smartspend.dto.BudgetDTO;
-import com.cts.smartspend.entity.Budget;
-import com.cts.smartspend.service.BudgetService;
+import com.cts.smartspend.serviceImpl.BudgetService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

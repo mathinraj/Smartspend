@@ -4,7 +4,7 @@ import com.cts.smartspend.dto.DateDTO;
 import com.cts.smartspend.dto.DateRangeDTO;
 import com.cts.smartspend.dto.ExpenseDTO;
 import com.cts.smartspend.dto.ExpenseResponseDTO;
-import com.cts.smartspend.service.ExpenseService;
+import com.cts.smartspend.serviceImpl.ExpenseService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
