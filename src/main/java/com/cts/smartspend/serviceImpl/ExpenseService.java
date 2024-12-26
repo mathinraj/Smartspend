@@ -4,7 +4,7 @@ import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.entity.Expense;
 import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.dto.ExpenseDTO;
-import com.cts.smartspend.exception.BudgetNotFoundException;
+import com.cts.smartspend.exception.CategoryNotFoundException;
 import com.cts.smartspend.exception.ExpenseNotFoundException;
 import com.cts.smartspend.repo.CategoryRepo;
 import com.cts.smartspend.repo.ExpenseRepo;
@@ -34,7 +34,7 @@ public class ExpenseService implements IExpenseService {
     @Transactional
     public ExpenseDTO createExpense(ExpenseDTO expenseDTO) {
         Category category = categoryRepo.findById(expenseDTO.getCategoryId())
-                .orElseThrow(() -> new ExpenseNotFoundException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
 //        Expense expense = Expense.builder()
 //                .category(category)
@@ -57,6 +57,9 @@ public class ExpenseService implements IExpenseService {
     @Override
     public List<ExpenseResponseDTO> getAllExpenses() {
         List<Expense> expenses= expenseRepo.findAll();
+        if (expenses.isEmpty()) {
+            throw new ExpenseNotFoundException("Expense not found");
+        }
         return expenses.stream()
                 .map(this::convertToExpenseResponseDTO)
                 .collect(Collectors.toList());
@@ -65,13 +68,19 @@ public class ExpenseService implements IExpenseService {
     @Override
     public ExpenseResponseDTO getExpenseById(Long id) {
          Expense expense = expenseRepo.findById(id)
-                 .orElseThrow(() -> new ExpenseNotFoundException("Expense with ID " + id + " not found"));
+                 .orElseThrow(() -> new ExpenseNotFoundException("Expense not found with id: " + id));
          return convertToExpenseResponseDTO(expense);
     }
 
     @Override
     public List<ExpenseResponseDTO> getExpenseByCategory(Long id) {
+        if (!categoryRepo.existsById(id)) {
+            throw new CategoryNotFoundException("Category not found with id - " +id);
+        }
         List<Expense> expenses = expenseRepo.findByCategoryId(id);
+        if (expenses.isEmpty()) {
+            throw new ExpenseNotFoundException("No expenses found for category id - " + id);
+        }
         return expenses.stream()
                 .map(this::convertToExpenseResponseDTO)
                 .collect(Collectors.toList());
@@ -80,6 +89,9 @@ public class ExpenseService implements IExpenseService {
     @Override
     public List<ExpenseResponseDTO> getExpensesByDate(LocalDate date) {
         List<Expense> expenses = expenseRepo.findByDate(date);
+        if (expenses.isEmpty()) {
+            throw new ExpenseNotFoundException("No expenses found on " + date);
+        }
         return expenses.stream()
                 .map(this::convertToExpenseResponseDTO)
                 .collect(Collectors.toList());
@@ -88,6 +100,9 @@ public class ExpenseService implements IExpenseService {
     @Override
     public List<ExpenseResponseDTO> getExpensesByRange(LocalDate startDate, LocalDate endDate) {
         List<Expense> expenses = expenseRepo.findByDateRange(startDate, endDate);
+        if (expenses.isEmpty()) {
+            throw new ExpenseNotFoundException("No expenses found between " +startDate + " and " + endDate );
+        }
         return expenses.stream()
                 .map(this::convertToExpenseResponseDTO)
                 .collect(Collectors.toList());
@@ -128,16 +143,21 @@ public class ExpenseService implements IExpenseService {
     }
 
     private ExpenseResponseDTO convertToExpenseResponseDTO(Expense expense) {
-        Budget budget = budgetRepo.findByCategoryId(expense.getCategory().getId())
-                .orElseThrow(() -> new BudgetNotFoundException("Budget not found"));
+        Budget budget = budgetRepo.findByCategoryId(expense.getCategory().getId()).orElse(null);
+                //.orElseThrow(() -> new BudgetNotFoundException("Budget not found"));
+        double value = 0;
+        String remainingBudget = "Budget is not created yet";
+        if (budget!=null) {
+            double totalExpenses = expenseRepo.findByCategoryIdAndDateRange( expense.getCategory().getId(), budget.getStartDate(), budget.getEndDate())
+                    .stream()
+                    .mapToDouble(Expense::getAmount)
+                    .sum();
 
-        double totalExpenses = expenseRepo.findByCategoryIdAndDateRange( expense.getCategory().getId(), budget.getStartDate(), budget.getEndDate())
-                .stream()
-                .mapToDouble(Expense::getAmount)
-                .sum();
-
-        double remainingBudget = budget.getAmount() - totalExpenses;
-
+            value = budget.getAmount() - totalExpenses;
+        }
+        if (value != 0) {
+            remainingBudget = Double.toString(value);
+        }
         return new ExpenseResponseDTO(
                 expense.getId(),
                 expense.getDescription(),

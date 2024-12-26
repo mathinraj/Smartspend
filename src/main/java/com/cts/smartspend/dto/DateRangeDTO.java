@@ -1,6 +1,7 @@
 package com.cts.smartspend.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Future;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class DateRangeDTO {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate startDate;
 
+    @Future
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate endDate;
 

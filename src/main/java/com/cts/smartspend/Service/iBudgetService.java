@@ -1,7 +1,6 @@
 package com.cts.smartspend.service;
 
 import com.cts.smartspend.dto.BudgetDTO;
-
 import java.util.List;
 
 public interface IBudgetService {

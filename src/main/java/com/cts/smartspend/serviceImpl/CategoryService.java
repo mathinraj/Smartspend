@@ -33,13 +33,18 @@ public class CategoryService implements ICategoryService {
     @Override
     public List<CategoryDTO> getAllCategories() {
         List<Category> category = categoryRepo.findAll();
+        if (category.isEmpty()) {
+            throw new CategoryNotFoundException("Category not found");
+        }
         return convertToCategoryDTO(category);
     }
 
     @Override
     public CategoryDTO getCategoryById(Long id) {
-        Category category = categoryRepo.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
+        Category category = categoryRepo.findById(id).orElse(null);
+        if (category == null) {
+            throw new CategoryNotFoundException("Category with ID-" + id+ " is not found");
+        }
         return convertToCategoryDTO(category);
     }
 
@@ -47,7 +52,8 @@ public class CategoryService implements ICategoryService {
     @Transactional
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category existingCategory = categoryRepo.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
+                .orElseThrow(() -> new CategoryNotFoundException("Category with ID-" + id + " is not found"));
+
         existingCategory.setName(categoryDTO.getName());
         Category savedCategory = categoryRepo.save(existingCategory);
         return convertToCategoryDTO(savedCategory);
@@ -57,7 +63,8 @@ public class CategoryService implements ICategoryService {
     @Transactional
     public void deleteCategory(Long id) {
         Category category = categoryRepo.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id " + id));
+                .orElseThrow(() -> new CategoryNotFoundException("Category with ID-" + id + " is not found"));
+
         categoryRepo.delete(category);
     }
 
