@@ -43,7 +43,7 @@ public class BudgetController {
     }
 
     @PostMapping("/set")
-    public ResponseEntity<BudgetDTO> setBudget(@Valid @RequestBody BudgetDTO budgetDTO){
+    public ResponseEntity<?> setBudget(@Valid @RequestBody BudgetDTO budgetDTO){
         if (budgetDTO.getEndDate().isBefore(budgetDTO.getStartDate())) {
             logger.warn("Date range is after start date");
             return new ResponseEntity<>("End date should be after start date", HttpStatus.BAD_REQUEST);
