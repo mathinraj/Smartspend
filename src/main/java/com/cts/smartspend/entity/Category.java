@@ -3,15 +3,13 @@ package com.cts.smartspend.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Comment;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Entity
 @Table(name = "categories")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class Category {
 
     @Id

@@ -2,15 +2,12 @@ package com.cts.smartspend.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "expenses")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class Expense {
 
     @Id
@@ -21,6 +18,10 @@ public class Expense {
     @JsonBackReference
     private Category category;
 
+    @ManyToOne
+    @JsonBackReference
+    private User user;
+
     private Double amount;
 
     private String description;
@@ -30,12 +31,21 @@ public class Expense {
     public Expense() {
     }
 
-    public Expense(Long id, Category category, Double amount, String description, LocalDate date) {
+    public Expense(Long id, Category category, Double amount, String description, User user, LocalDate date) {
         this.id = id;
         this.category = category;
         this.amount = amount;
         this.description = description;
+        this.user = user;
         this.date = date;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getId() {

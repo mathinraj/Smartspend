@@ -3,13 +3,10 @@ package com.cts.smartspend.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ExpenseDTO {
 
     private Long id;
@@ -27,15 +24,27 @@ public class ExpenseDTO {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate date;
 
+    @NotNull(message = "User ID should not be null")
+    private Long userId;
+
     public ExpenseDTO() {
     }
 
-    public ExpenseDTO(Long id, Long categoryId, Double amount, String description, LocalDate date) {
+    public ExpenseDTO(Long id, Long categoryId, Double amount, String description, Long userId, LocalDate date) {
         this.id = id;
         this.categoryId = categoryId;
         this.amount = amount;
         this.description = description;
+        this.userId = userId;
         this.date = date;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getId() {

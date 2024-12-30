@@ -36,13 +36,6 @@ public class BudgetService implements IBudgetService {
         Category category = categoryRepo.findById(budgetDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
-//        Budget budget = Budget.builder()
-//                .category(category)
-//                .amount(budgetDTO.getAmount())
-//                .startDate(budgetDTO.getStartDate())
-//                .endDate(budgetDTO.getEndDate())
-//                .build();
-
         Budget budget = new Budget();
         budget.setCategory(category);
         budget.setAmount(budgetDTO.getAmount());

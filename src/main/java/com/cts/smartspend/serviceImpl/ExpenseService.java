@@ -4,11 +4,14 @@ import com.cts.smartspend.entity.Category;
 import com.cts.smartspend.entity.Expense;
 import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.dto.ExpenseDTO;
+import com.cts.smartspend.entity.User;
 import com.cts.smartspend.exception.CategoryNotFoundException;
 import com.cts.smartspend.exception.ExpenseNotFoundException;
+import com.cts.smartspend.exception.UserNotFoundException;
 import com.cts.smartspend.repo.CategoryRepo;
 import com.cts.smartspend.repo.ExpenseRepo;
 import com.cts.smartspend.repo.BudgetRepo;
+import com.cts.smartspend.repo.UserRepo;
 import com.cts.smartspend.service.IExpenseService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +33,21 @@ public class ExpenseService implements IExpenseService {
     @Autowired
     private BudgetRepo budgetRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
     @Override
     @Transactional
     public ExpenseDTO createExpense(ExpenseDTO expenseDTO) {
         Category category = categoryRepo.findById(expenseDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
-//        Expense expense = Expense.builder()
-//                .category(category)
-//                .description(expenseDTO.getDescription())
-//                .amount(expenseDTO.getAmount())
-//                .date(expenseDTO.getDate())
-//                .build();
+        User user = userRepo.findById(expenseDTO.getUserId())
+                        .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Expense expense = new Expense();
         expense.setCategory(category);
+        expense.setUser(user);
         expense.setDescription(expenseDTO.getDescription());
         expense.setAmount(expenseDTO.getAmount());
         expense.setDate(expenseDTO.getDate());
@@ -138,6 +141,7 @@ public class ExpenseService implements IExpenseService {
                 expense.getCategory().getId(),
                 expense.getAmount(),
                 expense.getDescription(),
+                expense.getUser().getId(),
                 expense.getDate()
         );
     }
@@ -164,6 +168,7 @@ public class ExpenseService implements IExpenseService {
                 expense.getAmount(),
                 expense.getDate(),
                 expense.getCategory().getName(),
+                expense.getUser().getId(),
                 remainingBudget
         );
     }

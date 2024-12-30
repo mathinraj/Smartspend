@@ -21,9 +21,6 @@ public class CategoryService implements ICategoryService {
     @Override
     @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-//        Category category = Category.builder()
-//                .name(categoryDTO.getName())
-//                .build();
         Category category = new Category();
         category.setName(categoryDTO.getName());
         Category savedCategory = categoryRepo.save(category);

@@ -37,6 +37,13 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(errorMessage, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
+        String errorMessage = ex.getMessage();
+        logger.warn(errorMessage);
+        return buildErrorResponse(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);

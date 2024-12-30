@@ -2,15 +2,12 @@ package com.cts.smartspend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "budgets")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Budget {
 
     @Id
