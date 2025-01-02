@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -148,22 +149,28 @@ public class ExpenseService implements IExpenseService {
     }
 
     private ExpenseResponseDTO convertToExpenseResponseDTO(Expense expense) {
-        Budget budget = budgetRepo.findByCategoryId(expense.getCategory().getId())
-                .orElse(null);
-                //.orElseThrow(() -> new BudgetNotFoundException("Budget not found"));
+        // Find the budget that covers the expense date
+        Optional<Budget> budgetOpt = budgetRepo.findBudgetByCategoryAndDate(
+                expense.getCategory().getId(), expense.getDate());
+
         double value = 0;
         String remainingBudget = "Budget is not created yet";
-        if (budget!=null) {
-            double totalExpenses = expenseRepo.findByCategoryIdAndDateRange( expense.getCategory().getId(), budget.getStartDate(), budget.getEndDate())
+
+        if (budgetOpt.isPresent()) {
+            Budget budget = budgetOpt.get();
+            double totalExpenses = expenseRepo.findByCategoryIdAndDateRange(
+                            expense.getCategory().getId(), budget.getStartDate(), budget.getEndDate())
                     .stream()
                     .mapToDouble(Expense::getAmount)
                     .sum();
 
             value = budget.getAmount() - totalExpenses;
         }
+
         if (value != 0) {
             remainingBudget = Double.toString(value);
         }
+
         return new ExpenseResponseDTO(
                 expense.getId(),
                 expense.getDescription(),
@@ -174,5 +181,5 @@ public class ExpenseService implements IExpenseService {
                 remainingBudget
         );
     }
-
 }
+

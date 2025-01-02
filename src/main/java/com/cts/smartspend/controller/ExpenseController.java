@@ -6,6 +6,7 @@ import com.cts.smartspend.dto.ExpenseDTO;
 import com.cts.smartspend.dto.ExpenseResponseDTO;
 import com.cts.smartspend.exception.CategoryNotFoundException;
 import com.cts.smartspend.exception.ExpenseNotFoundException;
+import com.cts.smartspend.service.IExpenseService;
 import com.cts.smartspend.serviceImpl.ExpenseService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ExpenseController {
 
     @Autowired
-    ExpenseService expenseService;
+    IExpenseService expenseService;
 
    private static final Logger logger = LoggerFactory.getLogger(ExpenseController.class);
 

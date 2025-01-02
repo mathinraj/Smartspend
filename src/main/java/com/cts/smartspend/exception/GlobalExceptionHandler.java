@@ -40,6 +40,12 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(errorMessage, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(OverlappingBudgetException.class)
+    public ResponseEntity<Object> handleOverlappingBudgetException(OverlappingBudgetException ex) {
+        String errorMessage = ex.getMessage();
+        return buildErrorResponse(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);

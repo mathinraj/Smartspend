@@ -2,6 +2,7 @@ package com.cts.smartspend.controller;
 
 import com.cts.smartspend.dto.CategoryDTO;
 import com.cts.smartspend.exception.CategoryNotFoundException;
+import com.cts.smartspend.service.ICategoryService;
 import com.cts.smartspend.serviceImpl.CategoryService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import java.util.List;
 public class CategoryController {
 
     @Autowired
-    CategoryService categoryService;
+    ICategoryService categoryService;
 
     private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 

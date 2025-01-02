@@ -3,6 +3,7 @@ package com.cts.smartspend.serviceImpl;
 import com.cts.smartspend.dto.BudgetDTO;
 import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.entity.Category;
+import com.cts.smartspend.exception.OverlappingBudgetException;
 import com.cts.smartspend.service.IBudgetService;
 import com.cts.smartspend.exception.BudgetNotFoundException;
 import com.cts.smartspend.exception.CategoryNotFoundException;
@@ -33,6 +34,14 @@ public class BudgetService implements IBudgetService {
     @Override
     @Transactional
     public BudgetDTO setBudget(BudgetDTO budgetDTO) {
+
+        List<Budget> overlappingBudgets = budgetRepo.findOverlappingBudgets(
+                budgetDTO.getCategoryId(), budgetDTO.getStartDate(), budgetDTO.getEndDate());
+
+        if (!overlappingBudgets.isEmpty()) {
+            throw new OverlappingBudgetException("A budget already exists for the same category with overlapping dates.");
+        }
+
         Category category = categoryRepo.findById(budgetDTO.getCategoryId())
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found"));
 
@@ -68,6 +77,14 @@ public class BudgetService implements IBudgetService {
     @Transactional
     public BudgetDTO updateBudget(Long id, BudgetDTO budgetDTO) {
         Budget budget = getBudgetEntityById(id);
+
+        List<Budget> overlappingBudgets = budgetRepo.findOverlappingBudgets(
+                budgetDTO.getCategoryId(), budgetDTO.getStartDate(), budgetDTO.getEndDate());
+
+        if (!overlappingBudgets.isEmpty() && !overlappingBudgets.get(0).getId().equals(id)) {
+            throw new OverlappingBudgetException("A budget already exists for the same category with overlapping dates.");
+        }
+
         Category category = categoryRepo.findById(budgetDTO.getCategoryId())
                         .orElseThrow(() -> new CategoryNotFoundException("Category cannot be found"));
 

@@ -1,6 +1,7 @@
 package com.cts.smartspend.controller;
 
 import com.cts.smartspend.dto.UserDTO;
+import com.cts.smartspend.service.IUserService;
 import com.cts.smartspend.serviceImpl.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 

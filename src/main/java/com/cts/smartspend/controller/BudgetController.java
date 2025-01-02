@@ -1,6 +1,7 @@
 package com.cts.smartspend.controller;
 
 import com.cts.smartspend.dto.BudgetDTO;
+import com.cts.smartspend.service.IBudgetService;
 import com.cts.smartspend.serviceImpl.BudgetService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import java.util.List;
 public class BudgetController {
 
     @Autowired
-    private BudgetService budgetService;
+    private IBudgetService budgetService;
 
     private static final Logger logger = LoggerFactory.getLogger(BudgetController.class);
 
