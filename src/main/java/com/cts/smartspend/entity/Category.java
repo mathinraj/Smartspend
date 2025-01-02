@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "categories")
+@Component
 public class Category {
 
     @Id

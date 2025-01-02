@@ -21,7 +21,7 @@ public class ExpenseDTO {
     private String description;
 
     @NotNull(message = "Date must be entered")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     @NotNull(message = "User ID should not be null")

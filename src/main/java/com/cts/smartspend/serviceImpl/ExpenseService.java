@@ -5,6 +5,7 @@ import com.cts.smartspend.entity.Expense;
 import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.dto.ExpenseDTO;
 import com.cts.smartspend.entity.User;
+import com.cts.smartspend.exception.BudgetNotFoundException;
 import com.cts.smartspend.exception.CategoryNotFoundException;
 import com.cts.smartspend.exception.ExpenseNotFoundException;
 import com.cts.smartspend.exception.UserNotFoundException;
@@ -147,7 +148,8 @@ public class ExpenseService implements IExpenseService {
     }
 
     private ExpenseResponseDTO convertToExpenseResponseDTO(Expense expense) {
-        Budget budget = budgetRepo.findByCategoryId(expense.getCategory().getId()).orElse(null);
+        Budget budget = budgetRepo.findByCategoryId(expense.getCategory().getId())
+                .orElse(null);
                 //.orElseThrow(() -> new BudgetNotFoundException("Budget not found"));
         double value = 0;
         String remainingBudget = "Budget is not created yet";

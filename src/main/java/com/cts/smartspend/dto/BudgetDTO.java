@@ -16,6 +16,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class BudgetDTO {
 
+    private Long id;
+
     @DecimalMin(value = "1.0", message = "Budget amount should be greater than Rs.1")
     private double amount;
 
@@ -23,18 +25,27 @@ public class BudgetDTO {
     private Long categoryId;
 
     @NotNull(message = "Start date cannot be empty")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @NotNull(message = "End date cannot be empty")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    public BudgetDTO(double amount, Long categoryId, LocalDate startDate, LocalDate endDate) {
+    public BudgetDTO(Long id, double amount, Long categoryId, LocalDate startDate, LocalDate endDate) {
+        this.id = id;
         this.amount = amount;
         this.categoryId = categoryId;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public BudgetDTO() {}

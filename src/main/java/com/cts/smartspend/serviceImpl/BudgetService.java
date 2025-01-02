@@ -54,6 +54,9 @@ public class BudgetService implements IBudgetService {
 
     @Override
     public List<BudgetDTO> getBudgetByCategoryId(Long id) {
+        if (!categoryRepo.existsById(id)) {
+            throw new CategoryNotFoundException("Category is not found");
+        }
         List<Budget> budget = budgetRepo.findAllByCategoryId(id);
         if (budget.isEmpty()) {
             throw new BudgetNotFoundException("Budget is not found");
@@ -86,6 +89,7 @@ public class BudgetService implements IBudgetService {
 
     private BudgetDTO convertToBudgetDTO(Budget budget) {
         return new BudgetDTO(
+                budget.getId(),
                 budget.getAmount(),
                 budget.getCategory().getId(),
                 budget.getStartDate(),

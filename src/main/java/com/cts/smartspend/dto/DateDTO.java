@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Data
 public class DateDTO {
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd") //ISO 8601 format
     private LocalDate date;
 
     public DateDTO() {

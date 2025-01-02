@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class BudgetController {
 
     private static final Logger logger = LoggerFactory.getLogger(BudgetController.class);
 
-    @GetMapping("/getall")
+    @GetMapping("/get/all")
     public ResponseEntity<List<BudgetDTO>> getAllBudgets(){
         List<BudgetDTO> budget = budgetService.getAllBudgets();
         logger.info("Budget found");
@@ -42,10 +43,11 @@ public class BudgetController {
         return new ResponseEntity<>(budgetDTO, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/set")
     public ResponseEntity<?> setBudget(@Valid @RequestBody BudgetDTO budgetDTO){
         if (budgetDTO.getEndDate().isBefore(budgetDTO.getStartDate())) {
-            logger.warn("Date range is after start date");
+            logger.warn("End date should be after start date");
             return new ResponseEntity<>("End date should be after start date", HttpStatus.BAD_REQUEST);
         }
         BudgetDTO budget = budgetService.setBudget(budgetDTO);
@@ -53,6 +55,7 @@ public class BudgetController {
         return new ResponseEntity<>(budget, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<BudgetDTO> updateBudget(@Valid @RequestBody BudgetDTO budgetDTO, @PathVariable Long id){
         BudgetDTO budget = budgetService.updateBudget(id, budgetDTO);
@@ -60,6 +63,7 @@ public class BudgetController {
         return new ResponseEntity<>(budget, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteBudget(@PathVariable Long id){
         budgetService.deleteBudget(id);

@@ -11,11 +11,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class DateRangeDTO {
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
 
     @Future
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
     public DateRangeDTO() {

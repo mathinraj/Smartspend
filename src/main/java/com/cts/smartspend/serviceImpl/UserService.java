@@ -5,7 +5,9 @@ import com.cts.smartspend.entity.User;
 import com.cts.smartspend.exception.UserNotFoundException;
 import com.cts.smartspend.repo.UserRepo;
 import com.cts.smartspend.service.IUserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,15 +19,16 @@ public class UserService implements IUserService {
     @Autowired
     private UserRepo userRepo;
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         User user = new User();
         user.setUsername(userDTO.getUsername());
-        //user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setPassword(userDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        //user.setPassword(userDTO.getPassword());
         user.setRole(User.Role.valueOf(userDTO.getRole().toUpperCase()));
         User savedUser = userRepo.save(user);
         return convertToUserDTO(savedUser);
@@ -54,18 +57,20 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User Not Found"));
         user.setUsername(userDTO.getUsername());
-        //user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setPassword(userDTO.getPassword());
-        user.setRole(User.Role.valueOf(userDTO.getRole()));
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        //user.setPassword(userDTO.getPassword());
+        user.setRole(User.Role.valueOf(userDTO.getRole().toUpperCase()));
         User savedUser = userRepo.save(user);
         return convertToUserDTO(savedUser);
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         if (!userRepo.existsById(id)) {
             throw new UserNotFoundException("User with ID " + id + " not found");
