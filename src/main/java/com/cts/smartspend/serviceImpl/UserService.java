@@ -1,5 +1,6 @@
 package com.cts.smartspend.serviceImpl;
 
+import com.cts.smartspend.dto.LoginDTO;
 import com.cts.smartspend.dto.UserDTO;
 import com.cts.smartspend.entity.User;
 import com.cts.smartspend.exception.UserNotFoundException;
@@ -7,6 +8,8 @@ import com.cts.smartspend.repo.UserRepo;
 import com.cts.smartspend.service.IUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -76,6 +79,26 @@ public class UserService implements IUserService {
             throw new UserNotFoundException("User with ID " + id + " not found");
         }
         userRepo.deleteById(id);
+    }
+
+    @Override
+    public ResponseEntity<?> loginUser(LoginDTO loginDTO) {
+        System.out.println("Finding username");
+        User user = userRepo.findByUsername(loginDTO.getUsername());
+        System.out.println("find username completed");
+        if (user == null) {
+            System.out.println("user not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        System.out.println("password to be matched");
+        boolean passwordMatches = passwordEncoder.matches(loginDTO.getPassword(), user.getPassword());
+        System.out.println(passwordMatches);
+        if (passwordMatches) {
+            System.out.println("password matched");
+            return ResponseEntity.status(HttpStatus.OK).body(user);
+        }
+        System.out.println("password not matched");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     private UserDTO convertToUserDTO(User user) {
