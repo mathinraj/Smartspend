@@ -36,6 +36,7 @@ public class ExpenseController {
         return new ResponseEntity<>(expense,HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/get/all")
     public ResponseEntity<List<ExpenseResponseDTO>> getAllExpenses() {
         List<ExpenseResponseDTO> expenses = expenseService.getAllExpenses();

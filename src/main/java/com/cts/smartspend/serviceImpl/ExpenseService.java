@@ -140,13 +140,14 @@ public class ExpenseService implements IExpenseService {
     private ExpenseDTO convertToExpenseDTO(Expense expense) {
         return new ExpenseDTO(
                 expense.getId(),
-                expense.getCategory().getId(),
                 expense.getAmount(),
                 expense.getDescription(),
+                expense.getCategory().getId(),
                 expense.getUser().getId(),
                 expense.getDate()
         );
     }
+
 
     private ExpenseResponseDTO convertToExpenseResponseDTO(Expense expense) {
         // Find the budget that covers the expense date

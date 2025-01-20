@@ -23,6 +23,7 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+
         return userService.loginUser(loginDTO);
     }
 }

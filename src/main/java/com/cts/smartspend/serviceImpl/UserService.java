@@ -98,7 +98,7 @@ public class UserService implements IUserService {
             return ResponseEntity.status(HttpStatus.OK).body(user);
         }
         System.out.println("password not matched");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     private UserDTO convertToUserDTO(User user) {
