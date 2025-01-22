@@ -1,15 +1,22 @@
 package com.cts.smartspend.serviceImpl;
 
+import com.cts.smartspend.dto.BudgetDTO;
 import com.cts.smartspend.dto.CategoryDTO;
+import com.cts.smartspend.dto.ExpenseResponseDTO;
+import com.cts.smartspend.entity.Budget;
 import com.cts.smartspend.entity.Category;
+import com.cts.smartspend.entity.Expense;
 import com.cts.smartspend.exception.CategoryNotFoundException;
+import com.cts.smartspend.repo.BudgetRepo;
 import com.cts.smartspend.repo.CategoryRepo;
+import com.cts.smartspend.repo.ExpenseRepo;
 import com.cts.smartspend.service.ICategoryService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +24,14 @@ public class CategoryService implements ICategoryService {
 
     @Autowired
     private CategoryRepo categoryRepo;
+    @Autowired
+    private ExpenseService expenseService;
+    @Autowired
+    private BudgetService budgetService;
+    @Autowired
+    private ExpenseRepo expenseRepo;
+    @Autowired
+    private BudgetRepo budgetRepo;
 
     @Override
     @Transactional
@@ -61,6 +76,15 @@ public class CategoryService implements ICategoryService {
     public void deleteCategory(Long id) {
         Category category = categoryRepo.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException("Category with ID-" + id + " is not found"));
+
+        List<Expense> expenseForCategoryID = expenseRepo.findByCategoryId(id);
+        if (!expenseForCategoryID.isEmpty()) {
+            throw new RuntimeException("Expenses found for the requested Category");
+        }
+        Optional<Budget> budgetForCategoryID = budgetRepo.findByCategoryId(id);
+        if (!budgetForCategoryID.isEmpty()) {
+            throw new RuntimeException("Budgets found for the requested Category");
+        }
 
         categoryRepo.delete(category);
     }

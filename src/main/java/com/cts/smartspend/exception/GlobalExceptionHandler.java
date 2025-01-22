@@ -46,6 +46,12 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(errorMessage, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException ex) {
+        String errorMessage = ex.getMessage();
+        return buildErrorResponse(errorMessage, HttpStatus.EXPECTATION_FAILED);
+    }
+
     private ResponseEntity<Object> buildErrorResponse(String message, HttpStatus status) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", message);
