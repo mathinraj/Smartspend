@@ -13,8 +13,7 @@ public class ExpenseDTO {
 
     @NotNull(message = "Category ID should not be null")
     private Long categoryId;
-
-    @DecimalMin(value = "1", message = "The amount should be greater than Rs.1")
+    
     private Double amount;
 
     @NotBlank(message = "Provide proper description")
