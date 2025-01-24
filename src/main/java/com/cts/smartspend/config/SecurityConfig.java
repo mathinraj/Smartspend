@@ -1,6 +1,8 @@
 package com.cts.smartspend.config;
 
 import com.cts.smartspend.security.CustomUserDetailsService;
+import com.cts.smartspend.security.JwtAuthFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,11 +27,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    public UserDetailsService userDetailsService()
-    {
-        return  new CustomUserDetailsService();
-    }
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
+
     @Bean
     public PasswordEncoder passwordEncoder()
     {
@@ -44,40 +45,27 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults()) // Enable Basic Auth
                 .formLogin(form -> form.disable()) // Disable Spring Security's default form login
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll())
+//                .logout(logout -> logout
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/login?logout")
+//                        .permitAll())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // Adds JWT filter before the UsernamePasswordAuthenticationFilter
                 .build();
     }
-    @Bean
-    public AuthenticationProvider authenticationProvider()
-    {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-
-    }
+//    @Bean
+//    public AuthenticationProvider authenticationProvider()
+//    {
+//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+//        provider.setUserDetailsService(userDetailsService());
+//        provider.setPasswordEncoder(passwordEncoder());
+//        return provider;
+//
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**") // Allow all endpoints
-//                        .allowedOrigins("http://localhost:5173") // Allow React frontend
-//                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Allowed HTTP methods
-//                        .allowedHeaders("*") // Allow all headers
-//                        .allowCredentials(true); // Allow credentials (e.g., cookies, authorization headers)
-//            }
-//        };
-//    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
